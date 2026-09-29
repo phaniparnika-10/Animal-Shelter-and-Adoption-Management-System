@@ -1,0 +1,2066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Animal Shelter &amp; Adoption Management System | Java OOP Mini Project</title>
+  <meta name="description" content="An object-oriented Java mini project for managing shelter animals, adopters and adoption transactions.">
+  <meta name="theme-color" content="#FFFAF3">
+
+  <!-- Fonts: loaded from Google Fonts when online. Local fallbacks are defined in style.css,
+       so the page still looks good when opened offline. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+/* =========================================================================
+   ANIMAL SHELTER & ADOPTION MANAGEMENT SYSTEM: Stylesheet
+   Contents
+   1.  Design tokens (colours, type, spacing)
+   2.  Reset & base
+   3.  Layout helpers
+   4.  Buttons, chips, cards
+   5.  Header & navigation
+   6.  Hero
+   7.  About & objectives
+   8.  Animals
+   9.  Features
+   10. OOP concepts, code window, class structure
+   11. Workflow timeline
+   12. Technology & architecture
+   13. Console output
+   14. Future enhancements
+   15. Team
+   16. Footer & back-to-top
+   17. Animations & reveal
+   18. Responsive rules
+   ========================================================================= */
+
+
+/* 1. DESIGN TOKENS ------------------------------------------------------- */
+:root {
+  /* Colour: light theme */
+  --bg:           #FFFAF3;   /* cream page background */
+  --bg-alt:       #FBF1E4;   /* alternate section background */
+  --surface:      #FFFFFF;   /* cards */
+  --ink:          #2A2320;   /* main text */
+  --muted:        #6A5E56;   /* secondary text */
+  --line:         #EBDFD1;   /* borders */
+  --accent:       #E4572E;   /* coral: decoration */
+  --accent-ink:   #B93A12;   /* coral: text and links (readable on cream) */
+  --accent-soft:  #FFE7DB;   /* coral tint */
+  --btn-bg:       #C23E14;   /* primary button */
+  --on-accent:    #FFFFFF;
+  --ok:           #1E7A4C;   /* "available" green */
+  --ok-soft:      #E2F3E9;
+  --header-bg:    rgba(255, 250, 243, .88);
+
+  /* Colour: always-dark surfaces (code and terminal) */
+  --code-bg:      #1E1916;
+  --code-bar:     #2A221D;
+  --code-line:    #3A2F28;
+  --code-text:    #F0E6DB;
+
+  /* Animal card backdrops */
+  --art-dog:      #FFE9D2;
+  --art-cat:      #F1EADF;
+  --art-bird:     #DFF1E7;
+
+  /* Type */
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-body:    "DM Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", Consolas, "Liberation Mono", monospace;
+
+  /* Shape and depth */
+  --radius-lg:    22px;
+  --radius-md:    14px;
+  --shadow-sm:    0 1px 2px rgba(74, 40, 16, .05), 0 6px 18px rgba(74, 40, 16, .06);
+  --shadow-md:    0 2px 4px rgba(74, 40, 16, .05), 0 16px 36px rgba(74, 40, 16, .12);
+
+  --header-h:     72px;
+}
+
+/* Dark theme: switched by script.js through the data-theme attribute */
+[data-theme="dark"] {
+  --bg:           #15110F;
+  --bg-alt:       #1B1613;
+  --surface:      #231C18;
+  --ink:          #F6EEE6;
+  --muted:        #B9AB9F;
+  --line:         #3A2F28;
+  --accent:       #FF7A4D;
+  --accent-ink:   #FF9871;
+  --accent-soft:  #3A2218;
+  --btn-bg:       #FF7A4D;
+  --on-accent:    #1C0F09;
+  --ok:           #63D19A;
+  --ok-soft:      #173226;
+  --header-bg:    rgba(21, 17, 15, .88);
+  --art-dog:      #3B2A1D;
+  --art-cat:      #332B25;
+  --art-bird:     #1D3328;
+  --shadow-sm:    0 1px 2px rgba(0, 0, 0, .3), 0 6px 18px rgba(0, 0, 0, .25);
+  --shadow-md:    0 2px 4px rgba(0, 0, 0, .3), 0 16px 36px rgba(0, 0, 0, .4);
+}
+
+
+/* 2. RESET & BASE -------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg);
+  transition: background-color .3s ease, color .3s ease;
+}
+
+svg { display: block; max-width: 100%; }
+h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); line-height: 1.15; }
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+a { color: inherit; }
+button { font: inherit; color: inherit; cursor: pointer; }
+
+code, pre { font-family: var(--font-mono); }
+p code, li code {
+  font-size: .9em;
+  padding: .12em .45em;
+  border-radius: 6px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Hidden SVG sprite */
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  z-index: 200;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--bg);
+  text-decoration: none;
+  transition: top .2s;
+}
+.skip-link:focus { top: 12px; }
+
+
+/* 3. LAYOUT HELPERS ------------------------------------------------------ */
+.container { width: min(1160px, 100% - 48px); margin-inline: auto; }
+
+.section { padding-block: clamp(72px, 9vw, 120px); }
+.section--alt { background: var(--bg-alt); }
+section[id] { scroll-margin-top: var(--header-h); }
+
+.section-head { max-width: 62ch; margin-bottom: clamp(32px, 4vw, 52px); }
+.section-head p { margin-top: 14px; color: var(--muted); }
+.section-head--tight { margin-bottom: 28px; }
+
+h2 {
+  font-size: clamp(1.9rem, 2.4vw + 1rem, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+
+.subsection { margin-top: clamp(64px, 8vw, 96px); }
+.subsection-title {
+  font-size: clamp(1.4rem, 1.2vw + 1rem, 1.9rem);
+  font-weight: 700;
+  letter-spacing: -.015em;
+}
+.about-grid + .subsection .subsection-title { margin-bottom: 28px; }
+
+.grid { display: grid; gap: 20px; }
+.grid--objectives { grid-template-columns: repeat(4, 1fr); }
+.grid--animals    { grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.grid--features   { grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.grid--oop        { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.grid--classes    { grid-template-columns: repeat(3, 1fr); margin-top: 20px; }
+.grid--tech       { grid-template-columns: repeat(3, 1fr); }
+.grid--future     { grid-template-columns: repeat(5, 1fr); }
+
+
+/* 4. BUTTONS, CHIPS, CARDS ----------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease, color .2s ease;
+}
+.btn:hover { transform: translateY(-2px); }
+
+.btn-primary { background: var(--btn-bg); color: var(--on-accent); box-shadow: 0 8px 20px rgba(194, 62, 20, .25); }
+.btn-primary:hover { box-shadow: 0 12px 26px rgba(194, 62, 20, .32); }
+.btn-ghost { border-color: var(--ink); color: var(--ink); background: transparent; }
+.btn-ghost:hover { background: var(--ink); color: var(--bg); }
+
+.pill {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-size: .92rem;
+  font-weight: 700;
+}
+
+.chip-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip {
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-weight: 500;
+  font-size: .95rem;
+}
+.chip--code { font-family: var(--font-mono); font-size: .8rem; padding: 4px 12px; background: var(--accent-soft); border-color: transparent; color: var(--accent-ink); }
+.chip-row--code { margin-top: 20px; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  box-shadow: var(--shadow-sm);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.card--compact { padding: 24px; }
+.card--compact h3, .card--compact h4 { font-size: 1.08rem; font-weight: 700; margin-top: 16px; }
+.card--compact p { margin-top: 6px; font-size: .95rem; color: var(--muted); line-height: 1.55; }
+
+.icon-chip {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.icon-chip--lg { width: 58px; height: 58px; border-radius: 18px; }
+
+
+/* 5. HEADER & NAVIGATION ------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--header-h);
+  background: var(--header-bg);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .25s ease, box-shadow .25s ease;
+}
+.site-header.is-scrolled { border-color: var(--line); box-shadow: 0 6px 24px rgba(74, 40, 16, .06); }
+
+.nav-wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; flex-shrink: 0; }
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: var(--btn-bg);
+  color: var(--on-accent);
+}
+.brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+.brand-text strong { font-family: var(--font-display); font-size: 1.15rem; letter-spacing: -.01em; }
+.brand-text small { font-size: .75rem; color: var(--muted); }
+
+.nav-list { display: flex; gap: 2px; }
+.nav-link {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: .95rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .2s ease, background-color .2s ease;
+}
+.nav-link:hover { color: var(--ink); background: var(--accent-soft); }
+.nav-link.is-active { color: var(--accent-ink); background: var(--accent-soft); font-weight: 700; }
+
+.nav-actions { display: flex; align-items: center; gap: 8px; }
+.icon-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  transition: background-color .2s ease, transform .2s ease;
+}
+.icon-btn:hover { background: var(--accent-soft); }
+
+/* Theme toggle shows the icon of the theme you would switch to */
+.icon-sun { display: none; }
+[data-theme="dark"] .icon-sun { display: block; }
+[data-theme="dark"] .icon-moon { display: none; }
+
+/* Hamburger (only visible on small screens) */
+.nav-toggle { display: none; }
+.nav-toggle .icon-close { display: none; }
+.nav-toggle[aria-expanded="true"] .icon-open { display: none; }
+.nav-toggle[aria-expanded="true"] .icon-close { display: block; }
+
+
+/* 6. HERO ---------------------------------------------------------------- */
+.hero { padding-block: clamp(40px, 6vw, 84px) clamp(64px, 8vw, 112px); }
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  align-items: center;
+  gap: clamp(32px, 5vw, 72px);
+}
+
+.hero h1 {
+  margin-top: 22px;
+  font-size: clamp(2rem, 3.3vw + 1rem, 3.6rem);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+}
+.lead { margin-top: 22px; max-width: 50ch; font-size: 1.2rem; color: var(--muted); }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  justify-content: start;
+  gap: 16px clamp(20px, 3vw, 44px);
+  margin-top: 52px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+.stat-value {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accent-ink);
+}
+.stat-icon { height: 2.4rem; display: flex; align-items: center; }
+.stat-label { display: block; margin-top: 8px; max-width: 12ch; font-size: .92rem; line-height: 1.35; color: var(--muted); }
+
+.hero-art { width: 100%; height: auto; max-width: 560px; margin-inline: auto; }
+.art-sign { font-family: var(--font-display); font-weight: 700; font-size: 15px; fill: #2A2320; }
+.art-tag  { font-family: var(--font-mono); font-weight: 500; font-size: 12px; fill: #2A2320; }
+
+
+/* 7. ABOUT & OBJECTIVES -------------------------------------------------- */
+.about-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: clamp(32px, 5vw, 72px); align-items: start; }
+.about-text { margin-top: 18px; max-width: 62ch; }
+.about-text:first-of-type { margin-top: 22px; }
+.about-grid .chip-row { margin-top: 26px; }
+
+.manages-card h3 { font-size: 1.25rem; font-weight: 700; }
+.check-list { margin-top: 20px; display: grid; gap: 14px; }
+.check-list li { display: flex; align-items: center; gap: 12px; font-weight: 500; }
+.check-list svg { color: var(--ok); flex-shrink: 0; }
+
+
+/* 8. ANIMALS ------------------------------------------------------------- */
+.filter-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 32px; }
+.filter-btn {
+  padding: 9px 22px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  font-weight: 700;
+  font-size: .95rem;
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+.filter-btn:hover { border-color: var(--ink); }
+.filter-btn.is-active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.filter-status { margin-left: auto; font-size: .92rem; color: var(--muted); }
+
+.animal-card {
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.animal-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.animal-card[hidden] { display: none; }
+.animal-card.is-shown { animation: pop-in .35s ease both; }
+
+.animal-art { position: relative; display: grid; place-items: end center; height: 200px; padding-top: 24px; overflow: hidden; }
+.animal-art svg { width: 168px; height: 168px; margin-bottom: -18px; }
+.art-dog  { background: var(--art-dog); }
+.art-cat  { background: var(--art-cat); }
+.art-bird { background: var(--art-bird); }
+
+.status {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: .82rem;
+  font-weight: 700;
+}
+.status--available { background: var(--ok-soft); color: var(--ok); }
+.status--adopted   { background: var(--accent-soft); color: var(--accent-ink); }
+
+.animal-body { padding: 24px 26px 28px; }
+.animal-body h3 { font-size: 1.6rem; font-weight: 700; letter-spacing: -.015em; }
+
+.facts { margin: 18px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; }
+.facts dt { font-size: .82rem; color: var(--muted); }
+.facts dd { margin: 0; font-weight: 700; }
+
+.sound-btn {
+  margin-top: 22px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: 1.5px dashed var(--accent);
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: .85rem;
+  color: var(--accent-ink);
+  transition: background-color .2s ease;
+}
+.sound-btn:hover { background: var(--accent-soft); }
+.sound-out { min-height: 1.6em; margin-top: 12px; font-family: var(--font-mono); font-size: .9rem; color: var(--ink); }
+
+
+/* 9. FEATURES ------------------------------------------------------------ */
+.feature h3 { margin-top: 22px; font-size: 1.3rem; font-weight: 700; }
+.feature p { margin-top: 8px; color: var(--muted); }
+
+
+/* 10. OOP CONCEPTS, CODE WINDOW, CLASS STRUCTURE ------------------------- */
+.oop-card { padding: 34px; }
+.oop-card h3 { font-size: 1.5rem; font-weight: 700; letter-spacing: -.015em; }
+.oop-card p { margin-top: 12px; color: var(--muted); }
+
+/* Shared "window" chrome for code and terminal */
+.code-window, .terminal {
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--code-bg);
+  border: 1px solid var(--code-line);
+  box-shadow: var(--shadow-md);
+}
+.code-window { margin-top: 28px; }
+
+.window-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  background: var(--code-bar);
+  border-bottom: 1px solid var(--code-line);
+  color: #BDAEA1;
+  font-family: var(--font-mono);
+  font-size: .82rem;
+}
+.dots { display: flex; gap: 7px; }
+.dots i { width: 12px; height: 12px; border-radius: 50%; background: #5A4A40; }
+.dots i:nth-child(1) { background: #E5654B; }
+.dots i:nth-child(2) { background: #E8B546; }
+.dots i:nth-child(3) { background: #6FBF8B; }
+.window-title { flex: 1; }
+
+.copy-btn {
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1px solid #5A4A40;
+  background: transparent;
+  color: #E9DFD3;
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  transition: background-color .2s ease;
+}
+.copy-btn:hover { background: #3A2F28; }
+
+.code-window pre, .terminal pre {
+  margin: 0;
+  padding: 26px 28px;
+  overflow-x: auto;
+  color: var(--code-text);
+  font-size: .9rem;
+  line-height: 1.75;
+  tab-size: 4;
+}
+.code-window pre code, .terminal pre code { font-family: inherit; }
+
+/* Syntax highlighting tokens (added by script.js) */
+.tok-k { color: #FF9A6B; }                       /* keyword */
+.tok-s { color: #A9D8A5; }                       /* string */
+.tok-c { color: #8F8073; font-style: italic; }   /* comment */
+.tok-t { color: #F3C56B; }                       /* class / type name */
+.tok-m { color: #8CC4FF; }                       /* method */
+.tok-n { color: #C7A9FF; }                       /* number */
+
+/* Class structure diagram */
+.tree-card { padding: 40px 30px; overflow-x: auto; }
+.tree-card:hover { transform: none; box-shadow: var(--shadow-sm); }
+.tree { min-width: 480px; max-width: 720px; margin-inline: auto; display: flex; flex-direction: column; align-items: center; }
+
+.class-box {
+  min-width: 0;
+  background: var(--surface);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  text-align: center;
+}
+.class-name {
+  padding: 10px 18px;
+  background: var(--accent-soft);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--ink);
+}
+.class-name span { margin-left: 8px; font-size: .75rem; color: var(--accent-ink); font-style: italic; }
+.class-members { padding: 12px 18px; display: grid; gap: 4px; font-family: var(--font-mono); font-size: .88rem; color: var(--muted); text-align: left; }
+.class-note { padding: 10px 18px; font-family: var(--font-mono); font-size: .82rem; color: var(--muted); }
+
+.class-box--root { min-width: 240px; position: relative; }
+.class-box--root .class-members { text-align: center; }
+
+.tree-branches { position: relative; width: 100%; margin-top: 44px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+/* Connector lines: one vertical from the parent, one horizontal bar, one stub per child */
+.tree-branches::before {
+  content: "";
+  position: absolute;
+  top: -22px;
+  left: calc(100% / 6);
+  right: calc(100% / 6);
+  height: 22px;
+  border-top: 2px solid var(--ink);
+}
+.tree-branches::after {
+  content: "";
+  position: absolute;
+  top: -44px;
+  left: calc(50% - 1px);
+  height: 22px;
+  border-left: 2px solid var(--ink);
+}
+.tree-branches .class-box { position: relative; }
+.tree-branches .class-box::before {
+  content: "";
+  position: absolute;
+  top: -24px;
+  left: calc(50% - 1px);
+  height: 22px;
+  border-left: 2px solid var(--ink);
+}
+
+.class-box--card { text-align: left; box-shadow: var(--shadow-sm); border-width: 1.5px; }
+.class-box--card .class-name { padding: 12px 22px; }
+.class-box--card .class-members { padding: 18px 22px 22px; }
+.class-box--card .class-members li::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 12px; border-radius: 50%; background: var(--accent); vertical-align: middle; }
+
+
+/* 11. WORKFLOW TIMELINE -------------------------------------------------- */
+.timeline { display: grid; gap: 30px; }
+.step { position: relative; padding-left: 68px; }
+.step-num {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--surface);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--accent-ink);
+}
+/* Vertical connector (mobile / tablet) */
+.step::before {
+  content: "";
+  position: absolute;
+  left: 22px;
+  top: 54px;
+  bottom: -30px;
+  width: 2px;
+  background: var(--line);
+}
+.step:last-child::before { display: none; }
+.step h3 { font-size: 1.15rem; font-weight: 700; padding-top: 8px; }
+.step p { margin-top: 6px; color: var(--muted); font-size: .97rem; line-height: 1.55; }
+
+
+/* 12. TECHNOLOGY & ARCHITECTURE ------------------------------------------ */
+.tech { display: flex; align-items: flex-start; gap: 18px; padding: 26px; }
+.tech-mark {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 1rem;
+}
+.tech h3 { font-size: 1.15rem; font-weight: 700; }
+.tech p { margin-top: 4px; font-size: .95rem; color: var(--muted); line-height: 1.5; }
+
+.layers { max-width: 820px; display: grid; gap: 0; }
+.layer {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 2fr;
+  align-items: center;
+  gap: 8px 28px;
+  padding: 20px 28px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--accent);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+.layer h4 { font-size: 1.08rem; font-weight: 700; }
+.layer p { font-size: .95rem; color: var(--muted); line-height: 1.5; }
+/* Arrow between layers */
+.layer:not(:last-child) { margin-bottom: 34px; }
+.layer:not(:last-child)::after {
+  content: "\2193";
+  position: absolute;
+  left: 32px;
+  bottom: -34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent-ink);
+}
+
+
+/* 13. CONSOLE OUTPUT ----------------------------------------------------- */
+.output-grid { display: grid; grid-template-columns: 1.35fr .65fr; gap: 28px; align-items: start; }
+.terminal pre { font-size: .88rem; line-height: 1.7; }
+.t-dim  { color: #8F8073; }
+.t-head { color: #F3C56B; font-weight: 500; }
+.t-ok   { color: #7FD6A0; }
+.t-err  { color: #FF8A73; }
+.t-cursor { display: inline-block; width: .6em; height: 1.1em; background: var(--code-text); vertical-align: -.2em; animation: caret 1.1s steps(1) infinite; }
+
+.output-notes { padding: 28px; }
+.output-notes:hover { transform: none; box-shadow: var(--shadow-sm); }
+.output-notes h3 { font-size: 1.25rem; font-weight: 700; }
+.output-notes ul { margin-top: 18px; display: grid; gap: 16px; }
+.output-notes li { font-size: .96rem; line-height: 1.55; color: var(--muted); }
+.output-notes strong { color: var(--ink); }
+
+
+/* 14. FUTURE ENHANCEMENTS ------------------------------------------------ */
+/* Uses .card--compact styles from section 4 */
+
+
+/* 15. TEAM --------------------------------------------------------------- */
+.team-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 24px; align-items: stretch; }
+.details-card { padding: 34px; }
+.details-card:hover { transform: none; box-shadow: var(--shadow-sm); }
+.details-card h3 { font-size: 1.35rem; font-weight: 700; }
+.details { margin: 22px 0 0; display: grid; gap: 0; }
+.details > div { display: grid; grid-template-columns: 130px 1fr; gap: 14px; padding: 14px 0; border-top: 1px solid var(--line); }
+.details dt { color: var(--muted); font-size: .95rem; }
+.details dd { margin: 0; font-weight: 700; }
+
+/* Placeholder text: dashed underline signals "edit me" */
+.placeholder { text-decoration: underline dashed var(--accent); text-underline-offset: 6px; text-decoration-thickness: 1.5px; }
+
+.members { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.member { display: flex; flex-direction: column; align-items: flex-start; padding: 28px; }
+.avatar { display: grid; place-items: center; width: 60px; height: 60px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-ink); }
+.member h3 { margin-top: 18px; font-size: 1.2rem; font-weight: 700; }
+.member p { margin-top: 4px; font-size: .92rem; color: var(--muted); }
+
+
+/* 16. FOOTER & BACK-TO-TOP ----------------------------------------------- */
+.site-footer { padding-block: 48px; background: var(--code-bg); color: var(--code-text); }
+.footer-grid { display: flex; align-items: center; justify-content: space-between; gap: 24px 40px; flex-wrap: wrap; }
+.footer-title { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; }
+.footer-sub { margin-top: 4px; color: #BDAEA1; }
+.site-footer .btn-primary { background: #FF7A4D; color: #1C0F09; box-shadow: none; }
+
+.to-top {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: var(--btn-bg);
+  color: var(--on-accent);
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition: opacity .25s ease, transform .25s ease, visibility .25s;
+}
+.to-top.is-visible { opacity: 1; visibility: visible; transform: none; }
+.to-top:hover { transform: translateY(-3px); }
+
+
+/* 17. ANIMATIONS & REVEAL ------------------------------------------------ */
+/* Scroll reveal: only active when script.js adds .js-reveal to <html> */
+.js-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.js-reveal [data-reveal].is-visible { opacity: 1; transform: none; }
+/* Keep card hover lift working after reveal finishes */
+.js-reveal .card[data-reveal].is-visible { transition: opacity .6s ease, transform .25s ease, box-shadow .25s ease; }
+
+/* Animal eyes blink now and then (hero and cards) */
+.eye { transform-box: fill-box; transform-origin: center; animation: blink 6s infinite; }
+
+@keyframes blink {
+  0%, 94%, 100% { transform: scaleY(1); }
+  97% { transform: scaleY(.1); }
+}
+@keyframes caret { 50% { opacity: 0; } }
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(10px) scale(.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+  .js-reveal [data-reveal] { opacity: 1; transform: none; }
+}
+
+
+/* 18. RESPONSIVE RULES --------------------------------------------------- */
+
+/* Large tablets and small laptops: switch to hamburger menu */
+@media (max-width: 1100px) {
+  .nav-toggle { display: grid; }
+
+  .nav {
+    position: absolute;
+    top: var(--header-h);
+    left: 0;
+    right: 0;
+    padding: 12px 24px 24px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 18px 30px rgba(74, 40, 16, .12);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: opacity .2s ease, transform .2s ease, visibility .2s;
+  }
+  .nav.is-open { opacity: 1; visibility: visible; transform: none; }
+  .nav-list { flex-direction: column; gap: 4px; }
+  .nav-link { padding: 14px 16px; border-radius: 12px; font-size: 1.05rem; }
+
+  /* 6-step timeline stays vertical; features and objectives get fewer columns */
+  .grid--objectives { grid-template-columns: repeat(2, 1fr); }
+  .grid--future { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Horizontal timeline only where there is room for six columns */
+@media (min-width: 1101px) {
+  .timeline { grid-template-columns: repeat(6, 1fr); gap: 20px; }
+  .step { padding-left: 0; padding-top: 68px; }
+  .step-num { top: 0; }
+  .step::before { left: 54px; right: -14px; top: 22px; bottom: auto; width: auto; height: 2px; }
+  .step h3 { padding-top: 0; }
+}
+
+/* Future grid: five columns on wide desktops */
+@media (min-width: 1101px) {
+  .grid--future { grid-template-columns: repeat(5, 1fr); }
+}
+
+/* Tablets */
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-visual { order: -1; }
+  .hero-art { max-width: 440px; }
+
+  .about-grid,
+  .team-grid,
+  .output-grid { grid-template-columns: 1fr; }
+
+  .grid--animals,
+  .grid--features,
+  .grid--tech { grid-template-columns: repeat(2, 1fr); }
+  .grid--oop { grid-template-columns: 1fr; }
+}
+
+/* Phones */
+@media (max-width: 640px) {
+  body { font-size: 1rem; }
+  .container { width: min(1160px, 100% - 32px); }
+
+  .brand-text small { display: none; }
+
+  .hero-stats { grid-template-columns: repeat(2, 1fr); }
+  .hero-actions .btn { flex: 1 1 100%; }
+
+  .grid--objectives,
+  .grid--animals,
+  .grid--features,
+  .grid--tech,
+  .grid--future,
+  .grid--classes,
+  .members { grid-template-columns: 1fr; }
+
+  .filter-status { margin-left: 0; flex-basis: 100%; }
+
+  .card { padding: 24px; }
+  .oop-card { padding: 26px; }
+
+  .layer { grid-template-columns: 1fr; padding: 18px 20px; }
+
+  .details > div { grid-template-columns: 1fr; gap: 2px; }
+
+  .code-window pre, .terminal pre { padding: 20px; font-size: .8rem; }
+  .tree-card { padding: 28px 16px; }
+}
+
+  </style>
+
+  <!-- Apply the saved (or system) theme before first paint to avoid a colour flash -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('shelter-theme');
+        var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- =====================================================================
+       SVG SPRITE: icons and animal faces reused across the page
+       ===================================================================== -->
+  <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <defs>
+      <!-- UI icons (stroke style) -->
+      <symbol id="i-paw" viewBox="0 0 24 24">
+        <g fill="currentColor">
+          <ellipse cx="5.5" cy="11" rx="2" ry="2.6"/><ellipse cx="9.5" cy="6.5" rx="2" ry="2.8"/>
+          <ellipse cx="14.5" cy="6.5" rx="2" ry="2.8"/><ellipse cx="18.5" cy="11" rx="2" ry="2.6"/>
+          <path d="M12 11.5c-3 0-6 3.4-6 6 0 1.9 1.6 2.8 3.2 2.5 1-.2 1.8-.5 2.8-.5s1.8.3 2.8.5c1.6.3 3.2-.6 3.2-2.5 0-2.6-3-6-6-6z"/>
+        </g>
+      </symbol>
+      <symbol id="i-user" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></g></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></g></symbol>
+      <symbol id="i-search-plus" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/></g></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></g></symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></g></symbol>
+      <symbol id="i-clipboard" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></g></symbol>
+      <symbol id="i-code" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 8-5 4 5 4M16 8l5 4-5 4M14 5l-4 14"/></g></symbol>
+      <symbol id="i-list" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></g></symbol>
+      <symbol id="i-database" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></g></symbol>
+      <symbol id="i-plug" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v5M15 2v5M6 7h12v4a6 6 0 0 1-12 0V7zM12 17v5"/></g></symbol>
+      <symbol id="i-window" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></g></symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></g></symbol>
+      <symbol id="i-cross" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></g></symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M10.3 21a2 2 0 0 0 3.4 0"/></g></symbol>
+      <symbol id="i-globe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></g></symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h8v8H3zM13 3h8v5h-8zM13 10h8v11h-8zM3 13h8v8H3z"/></g></symbol>
+      <symbol id="i-file-down" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5M12 11v6M9 14l3 3 3-3"/></g></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></g></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></g></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></g></symbol>
+      <symbol id="i-arrow-up" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></g></symbol>
+      <symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.11.79-.25.79-.56v-2c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.04 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.58.23 2.75.11 3.04.74.81 1.18 1.84 1.18 3.09 0 4.41-2.69 5.39-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 12 .5z"/></symbol>
+
+      <!-- Animal faces (fixed colours so they look right in light and dark mode) -->
+      <symbol id="dog-face" viewBox="0 0 100 100">
+        <ellipse cx="20" cy="46" rx="11" ry="24" fill="#A8703A" transform="rotate(12 20 46)"/>
+        <ellipse cx="80" cy="46" rx="11" ry="24" fill="#A8703A" transform="rotate(-12 80 46)"/>
+        <circle cx="50" cy="52" r="31" fill="#D9A25F"/>
+        <ellipse cx="50" cy="65" rx="16" ry="12" fill="#F0D3A8"/>
+        <ellipse cx="50" cy="58" rx="7" ry="5" fill="#2A2320"/>
+        <g class="eye"><circle cx="38" cy="45" r="3.4" fill="#2A2320"/><circle cx="62" cy="45" r="3.4" fill="#2A2320"/></g>
+        <path d="M50 63v5M43 68q7 6 14 0" fill="none" stroke="#2A2320" stroke-width="2" stroke-linecap="round"/>
+        <path d="M47 70q3 9 6 0z" fill="#E4572E"/>
+      </symbol>
+      <symbol id="cat-face" viewBox="0 0 100 100">
+        <path d="M18 44 22 8l25 18z" fill="#E6D8C5"/><path d="M82 44 78 8 53 26z" fill="#E6D8C5"/>
+        <path d="M25 36 27 18l13 9z" fill="#F4B7A5"/><path d="M75 36 73 18 60 27z" fill="#F4B7A5"/>
+        <ellipse cx="50" cy="56" rx="33" ry="28" fill="#F3E9DB"/>
+        <g class="eye">
+          <ellipse cx="37" cy="52" rx="4.6" ry="5" fill="#6BAA75"/><ellipse cx="63" cy="52" rx="4.6" ry="5" fill="#6BAA75"/>
+          <ellipse cx="37" cy="52" rx="1.6" ry="3.6" fill="#2A2320"/><ellipse cx="63" cy="52" rx="1.6" ry="3.6" fill="#2A2320"/>
+        </g>
+        <path d="M45.5 62h9l-4.5 5z" fill="#E4572E"/>
+        <path d="M50 67q-4 5-9 3M50 67q4 5 9 3" fill="none" stroke="#2A2320" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M30 64 14 61M30 68 14 72M70 64l16-3M70 68l16 4" fill="none" stroke="#B9A896" stroke-width="1.5" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="bird-face" viewBox="0 0 100 100">
+        <ellipse cx="50" cy="80" rx="30" ry="28" fill="#2F9E6F"/>
+        <ellipse cx="33" cy="82" rx="9" ry="19" fill="#25835B" transform="rotate(10 33 82)"/>
+        <circle cx="50" cy="42" r="27" fill="#E8543F"/>
+        <ellipse cx="45" cy="47" rx="11" ry="9" fill="#FBEFE6"/>
+        <g class="eye"><circle cx="43" cy="40" r="6" fill="#fff"/><circle cx="44" cy="40" r="3" fill="#2A2320"/></g>
+        <path d="M56 38C76 36 80 56 66 64 66 54 62 48 54 46z" fill="#F2B63C"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- =====================================================================
+       HEADER / NAVIGATION
+       ===================================================================== -->
+  <header class="site-header" id="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="#home" aria-label="Happy Paws Shelter, back to home">
+        <span class="brand-mark"><svg width="22" height="22" aria-hidden="true"><use href="#i-paw"/></svg></span>
+        <span class="brand-text">
+          <strong>Happy Paws</strong>
+          <small>Adoption Management System</small>
+        </span>
+      </a>
+
+      <nav class="nav" id="primary-nav" aria-label="Primary">
+        <ul class="nav-list">
+          <li><a class="nav-link" href="#home">Home</a></li>
+          <li><a class="nav-link" href="#about">About</a></li>
+          <li><a class="nav-link" href="#animals">Animals</a></li>
+          <li><a class="nav-link" href="#features">Features</a></li>
+          <li><a class="nav-link" href="#oop">OOP Concepts</a></li>
+          <li><a class="nav-link" href="#workflow">Workflow</a></li>
+          <li><a class="nav-link" href="#technology">Technology</a></li>
+          <li><a class="nav-link" href="#output">Output</a></li>
+          <li><a class="nav-link" href="#team">Team</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+          <svg class="icon-moon" width="20" height="20" aria-hidden="true"><use href="#i-moon"/></svg>
+          <svg class="icon-sun" width="20" height="20" aria-hidden="true"><use href="#i-sun"/></svg>
+        </button>
+        <button class="icon-btn nav-toggle" id="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav">
+          <svg class="icon-open" width="22" height="22" aria-hidden="true"><use href="#i-menu"/></svg>
+          <svg class="icon-close" width="22" height="22" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- =====================================================================
+         HERO
+         ===================================================================== -->
+    <section class="hero" id="home" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="pill">Java OOP mini project</p>
+          <h1 id="hero-title">Animal Shelter &amp;<br>Adoption Management System</h1>
+          <p class="lead">An Object-Oriented Java solution for managing shelter animals, adopters, and adoption transactions.</p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#about">Explore Project</a>
+            <a class="btn btn-ghost" href="#oop">View OOP Concepts</a>
+          </div>
+
+          <ul class="hero-stats" aria-label="Project at a glance">
+            <li>
+              <span class="stat-value" data-count="3">3</span>
+              <span class="stat-label">Animal Types</span>
+            </li>
+            <li>
+              <span class="stat-value" data-count="4">4</span>
+              <span class="stat-label">OOP Concepts</span>
+            </li>
+            <li>
+              <span class="stat-value stat-icon"><svg width="34" height="34" aria-hidden="true"><use href="#i-heart"/></svg></span>
+              <span class="stat-label">Adoption Management</span>
+            </li>
+            <li>
+              <span class="stat-value stat-icon"><svg width="34" height="34" aria-hidden="true"><use href="#i-code"/></svg></span>
+              <span class="stat-label">Java Based</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Hero illustration: the shelter with one animal per kennel (Dog, Cat, Bird) -->
+        <div class="hero-visual">
+          <svg class="hero-art" viewBox="0 0 520 430" role="img" aria-label="Illustration of the Happy Paws shelter with a dog, a cat and a parrot looking out of three kennel doors">
+            <defs>
+              <clipPath id="door-1"><path d="M80 390V265A50 50 0 0 1 180 265V390Z"/></clipPath>
+              <clipPath id="door-2"><path d="M210 390V265A50 50 0 0 1 310 265V390Z"/></clipPath>
+              <clipPath id="door-3"><path d="M340 390V265A50 50 0 0 1 440 265V390Z"/></clipPath>
+            </defs>
+
+            <circle cx="260" cy="230" r="205" style="fill: var(--accent-soft)"/>
+
+            <!-- Decorative paw prints -->
+            <use href="#i-paw" x="22" y="150" width="30" height="30" style="color: var(--accent); opacity: .45" transform="rotate(-18 37 165)"/>
+            <use href="#i-paw" x="466" y="92" width="26" height="26" style="color: var(--accent); opacity: .45" transform="rotate(16 479 105)"/>
+            <use href="#i-paw" x="476" y="196" width="22" height="22" style="color: var(--accent); opacity: .3" transform="rotate(-8 487 207)"/>
+
+            <!-- Building -->
+            <rect x="60" y="160" width="400" height="230" rx="10" style="fill: var(--surface); stroke: var(--ink)" stroke-width="3"/>
+            <path d="M36 164 260 48 484 164Z" style="fill: var(--accent); stroke: var(--ink)" stroke-width="3" stroke-linejoin="round"/>
+            <rect x="185" y="94" width="150" height="34" rx="17" fill="#FFFAF3" stroke="#2A2320" stroke-width="2.5"/>
+            <text x="260" y="116" text-anchor="middle" class="art-sign">Happy Paws Shelter</text>
+
+            <!-- Kennel 1: Dog -->
+            <path d="M80 390V265A50 50 0 0 1 180 265V390Z" fill="#3B2F29" stroke="#2A2320" stroke-width="3"/>
+            <g clip-path="url(#door-1)">
+              <ellipse cx="130" cy="388" rx="38" ry="34" fill="#D9A25F"/>
+              <use href="#dog-face" x="84" y="266" width="92" height="92"/>
+            </g>
+            <rect x="106" y="226" width="48" height="22" rx="11" fill="#FFFAF3"/>
+            <text x="130" y="241" text-anchor="middle" class="art-tag">ID 1</text>
+
+            <!-- Kennel 2: Cat -->
+            <path d="M210 390V265A50 50 0 0 1 310 265V390Z" fill="#3B2F29" stroke="#2A2320" stroke-width="3"/>
+            <g clip-path="url(#door-2)">
+              <ellipse cx="260" cy="388" rx="38" ry="34" fill="#F3E9DB"/>
+              <use href="#cat-face" x="214" y="266" width="92" height="92"/>
+            </g>
+            <rect x="236" y="226" width="48" height="22" rx="11" fill="#FFFAF3"/>
+            <text x="260" y="241" text-anchor="middle" class="art-tag">ID 2</text>
+
+            <!-- Kennel 3: Bird -->
+            <path d="M340 390V265A50 50 0 0 1 440 265V390Z" fill="#3B2F29" stroke="#2A2320" stroke-width="3"/>
+            <g clip-path="url(#door-3)">
+              <use href="#bird-face" x="344" y="292" width="92" height="92"/>
+            </g>
+            <rect x="366" y="226" width="48" height="22" rx="11" fill="#FFFAF3"/>
+            <text x="390" y="241" text-anchor="middle" class="art-tag">ID 3</text>
+
+            <!-- Ground -->
+            <path d="M20 392H500" style="stroke: var(--ink)" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         ABOUT + OBJECTIVES
+         ===================================================================== -->
+    <section class="section section--alt" id="about" aria-labelledby="about-title">
+      <div class="container">
+        <div class="about-grid">
+          <div>
+            <h2 id="about-title" data-reveal>About the project</h2>
+            <p class="about-text" data-reveal>The Animal Shelter &amp; Adoption Management System is a Java-based mini project that manages animal records and simplifies the adoption process. It replaces a paper register with a small program that knows which animals are available, who the adopters are, and which adoptions are complete.</p>
+            <p class="about-text" data-reveal>The project is also a working example of object-oriented programming. Each part of a real shelter is modelled as a class, and the code shows the four core ideas of OOP in practice.</p>
+            <ul class="chip-row" aria-label="OOP concepts demonstrated" data-reveal>
+              <li class="chip">Encapsulation</li>
+              <li class="chip">Inheritance</li>
+              <li class="chip">Polymorphism</li>
+              <li class="chip">Abstraction</li>
+            </ul>
+          </div>
+
+          <div class="card manages-card" data-reveal>
+            <h3>What the system manages</h3>
+            <ul class="check-list">
+              <li><svg width="22" height="22" aria-hidden="true"><use href="#i-check"/></svg>Animal information</li>
+              <li><svg width="22" height="22" aria-hidden="true"><use href="#i-check"/></svg>Adopter information</li>
+              <li><svg width="22" height="22" aria-hidden="true"><use href="#i-check"/></svg>Animal availability</li>
+              <li><svg width="22" height="22" aria-hidden="true"><use href="#i-check"/></svg>Adoption transactions</li>
+              <li><svg width="22" height="22" aria-hidden="true"><use href="#i-check"/></svg>Adoption records</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Objectives -->
+        <div class="subsection" id="objectives">
+          <h3 class="subsection-title" data-reveal>Project objectives</h3>
+          <ul class="grid grid--objectives">
+            <li class="card card--compact" data-reveal>
+              <span class="icon-chip"><svg width="24" height="24" aria-hidden="true"><use href="#i-paw"/></svg></span>
+              <h4>Manage animal records</h4>
+              <p>Add animals and view their type, breed, age and status.</p>
+            </li>
+            <li class="card card--compact" data-reveal>
+              <span class="icon-chip"><svg width="24" height="24" aria-hidden="true"><use href="#i-user"/></svg></span>
+              <h4>Register adopters</h4>
+              <p>Store each adopter's ID, name and phone number.</p>
+            </li>
+            <li class="card card--compact" data-reveal>
+              <span class="icon-chip"><svg width="24" height="24" aria-hidden="true"><use href="#i-search"/></svg></span>
+              <h4>Search animals and adopters</h4>
+              <p>Look up any record quickly by its ID.</p>
+            </li>
+            <li class="card card--compact" data-reveal>
+              <span class="icon-chip"><svg width="24" height="24" aria-hidden="true"><use href="#i-check"/></svg></span>
+              <h4>Check animal availability</h4>
+              <p>Confirm an animal is still free before adopting it.</p>
+            </li>
+            <li class="card card--compact" data-reveal>
+              <span class="icon-chip"><svg width="24" height="24" aria-hidden="true"><use href="#i-heart"/></svg></span>
+              <h4>Complete adoption transactions</h4>
+              <p>Link an animal to an adopter and update its status.</p>
+            </li>
+            <li class="card card--compact" data-reveal>
+              <span class="icon-chip"><svg width="24" height="24" aria-hidden="true"><use href="#i-clipboard"/></svg></span>
+              <h4>Maintain adoption records</h4>
+              <p>Keep a list of every completed adoption.</p>
+            </li>
+            <li class="card card--compact" data-reveal>
+              <span class="icon-chip"><svg width="24" height="24" aria-hidden="true"><use href="#i-code"/></svg></span>
+              <h4>Demonstrate Java OOP</h4>
+              <p>Apply encapsulation, inheritance, polymorphism and abstraction.</p>
+            </li>
+            <li class="card card--compact" data-reveal>
+              <span class="icon-chip"><svg width="24" height="24" aria-hidden="true"><use href="#i-list"/></svg></span>
+              <h4>Use ArrayList collections</h4>
+              <p>Hold animals, adopters and records in dynamic lists.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         ANIMALS (filterable cards)
+         ===================================================================== -->
+    <section class="section" id="animals" aria-labelledby="animals-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="animals-title" data-reveal>Meet the animals</h2>
+          <p data-reveal>Sample records from the shelter. Use the filters to see which animals are available and which have already been adopted.</p>
+        </div>
+
+        <div class="filter-bar" role="group" aria-label="Filter animals by status">
+          <button class="filter-btn is-active" type="button" data-filter="all" aria-pressed="true">All</button>
+          <button class="filter-btn" type="button" data-filter="available" aria-pressed="false">Available</button>
+          <button class="filter-btn" type="button" data-filter="adopted" aria-pressed="false">Adopted</button>
+          <p class="filter-status" id="filter-status" role="status" aria-live="polite">Showing 3 of 3 animals</p>
+        </div>
+
+        <!-- EDIT HERE: add more animals by copying one <article> and changing its data -->
+        <div class="grid grid--animals" id="animal-grid">
+          <article class="animal-card" data-status="adopted">
+            <div class="animal-art art-dog">
+              <svg viewBox="0 0 100 100" role="img" aria-label="Illustration of a Labrador dog"><use href="#dog-face"/></svg>
+              <span class="status status--adopted">Adopted</span>
+            </div>
+            <div class="animal-body">
+              <h3>Bruno</h3>
+              <dl class="facts">
+                <div><dt>ID</dt><dd>1</dd></div>
+                <div><dt>Type</dt><dd>Dog</dd></div>
+                <div><dt>Breed</dt><dd>Labrador</dd></div>
+                <div><dt>Age</dt><dd>3</dd></div>
+              </dl>
+              <button class="sound-btn" type="button" data-sound="Bruno says: Woof!">Run makeSound()</button>
+              <p class="sound-out" aria-live="polite"></p>
+            </div>
+          </article>
+
+          <article class="animal-card" data-status="available">
+            <div class="animal-art art-cat">
+              <svg viewBox="0 0 100 100" role="img" aria-label="Illustration of a Persian cat"><use href="#cat-face"/></svg>
+              <span class="status status--available">Available</span>
+            </div>
+            <div class="animal-body">
+              <h3>Milo</h3>
+              <dl class="facts">
+                <div><dt>ID</dt><dd>2</dd></div>
+                <div><dt>Type</dt><dd>Cat</dd></div>
+                <div><dt>Breed</dt><dd>Persian</dd></div>
+                <div><dt>Age</dt><dd>2</dd></div>
+              </dl>
+              <button class="sound-btn" type="button" data-sound="Milo says: Meow!">Run makeSound()</button>
+              <p class="sound-out" aria-live="polite"></p>
+            </div>
+          </article>
+
+          <article class="animal-card" data-status="available">
+            <div class="animal-art art-bird">
+              <svg viewBox="0 0 100 100" role="img" aria-label="Illustration of a parrot"><use href="#bird-face"/></svg>
+              <span class="status status--available">Available</span>
+            </div>
+            <div class="animal-body">
+              <h3>Kiwi</h3>
+              <dl class="facts">
+                <div><dt>ID</dt><dd>3</dd></div>
+                <div><dt>Type</dt><dd>Bird</dd></div>
+                <div><dt>Breed</dt><dd>Parrot</dd></div>
+                <div><dt>Age</dt><dd>1</dd></div>
+              </dl>
+              <button class="sound-btn" type="button" data-sound="Kiwi says: Tweet!">Run makeSound()</button>
+              <p class="sound-out" aria-live="polite"></p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         FEATURES
+         ===================================================================== -->
+    <section class="section section--alt" id="features" aria-labelledby="features-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="features-title" data-reveal>What the system does</h2>
+          <p data-reveal>Six core features cover everything from adding an animal to keeping a permanent adoption record.</p>
+        </div>
+
+        <ul class="grid grid--features">
+          <li class="card feature" data-reveal>
+            <span class="icon-chip icon-chip--lg"><svg width="28" height="28" aria-hidden="true"><use href="#i-paw"/></svg></span>
+            <h3>Animal Management</h3>
+            <p>Add and display animal information.</p>
+          </li>
+          <li class="card feature" data-reveal>
+            <span class="icon-chip icon-chip--lg"><svg width="28" height="28" aria-hidden="true"><use href="#i-user"/></svg></span>
+            <h3>Adopter Registration</h3>
+            <p>Store adopter ID, name and phone number.</p>
+          </li>
+          <li class="card feature" data-reveal>
+            <span class="icon-chip icon-chip--lg"><svg width="28" height="28" aria-hidden="true"><use href="#i-search"/></svg></span>
+            <h3>Search</h3>
+            <p>Search animals and adopters using their IDs.</p>
+          </li>
+          <li class="card feature" data-reveal>
+            <span class="icon-chip icon-chip--lg"><svg width="28" height="28" aria-hidden="true"><use href="#i-check"/></svg></span>
+            <h3>Availability Checking</h3>
+            <p>Check whether an animal is available before adoption.</p>
+          </li>
+          <li class="card feature" data-reveal>
+            <span class="icon-chip icon-chip--lg"><svg width="28" height="28" aria-hidden="true"><use href="#i-heart"/></svg></span>
+            <h3>Adoption Management</h3>
+            <p>Complete an adoption and update the animal's status.</p>
+          </li>
+          <li class="card feature" data-reveal>
+            <span class="icon-chip icon-chip--lg"><svg width="28" height="28" aria-hidden="true"><use href="#i-clipboard"/></svg></span>
+            <h3>Adoption Records</h3>
+            <p>Maintain information about completed adoptions.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         OOP CONCEPTS + CODE + CLASS STRUCTURE
+         ===================================================================== -->
+    <section class="section" id="oop" aria-labelledby="oop-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="oop-title" data-reveal>OOP concepts in the project</h2>
+          <p data-reveal>The four pillars of object-oriented programming, and where each one appears in the shelter code.</p>
+        </div>
+
+        <div class="grid grid--oop">
+          <article class="card oop-card" data-reveal>
+            <h3>Encapsulation</h3>
+            <p>Data members such as an animal's ID, name and age are private. Other classes reach them only through public methods, so the data stays protected and consistent.</p>
+            <ul class="chip-row chip-row--code"><li class="chip chip--code">private fields</li><li class="chip chip--code">public getters</li></ul>
+          </article>
+          <article class="card oop-card" data-reveal>
+            <h3>Inheritance</h3>
+            <p>Dog, Cat and Bird inherit common properties and behavior from the Animal class, so shared code is written once and reused.</p>
+            <ul class="chip-row chip-row--code"><li class="chip chip--code">Dog extends Animal</li><li class="chip chip--code">Cat extends Animal</li><li class="chip chip--code">Bird extends Animal</li></ul>
+          </article>
+          <article class="card oop-card" data-reveal>
+            <h3>Polymorphism</h3>
+            <p>Each animal class provides its own version of methods such as <code>getType()</code> and <code>makeSound()</code>. The same call gives a different result for a Dog, a Cat or a Bird.</p>
+            <ul class="chip-row chip-row--code"><li class="chip chip--code">getType()</li><li class="chip chip--code">makeSound()</li></ul>
+          </article>
+          <article class="card oop-card" data-reveal>
+            <h3>Abstraction</h3>
+            <p>An abstract Animal class defines the behavior every animal must have, while each specific type supplies the details.</p>
+            <ul class="chip-row chip-row--code"><li class="chip chip--code">abstract class Animal</li></ul>
+          </article>
+        </div>
+
+        <!-- Code sample (syntax highlighted by script.js) -->
+        <figure class="code-window" data-reveal>
+          <figcaption class="window-bar">
+            <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="window-title">Animal.java and Dog.java</span>
+            <button class="copy-btn" type="button" data-copy-target="#java-sample">Copy</button>
+          </figcaption>
+<pre tabindex="0"><code id="java-sample" class="language-java">abstract class Animal {
+    public abstract String getType();
+    public abstract void makeSound();
+}
+
+class Dog extends Animal {
+    public String getType() {
+        return "Dog";
+    }
+
+    public void makeSound() {
+        System.out.println("Woof!");
+    }
+}</code></pre>
+        </figure>
+
+        <!-- Class structure -->
+        <div class="subsection" id="class-structure">
+          <div class="section-head section-head--tight">
+            <h3 class="subsection-title" data-reveal>Class structure</h3>
+            <p data-reveal>Animal is the parent class. Shelter, Adopter and Adoption work together to manage the rest of the data.</p>
+          </div>
+
+          <!-- Inheritance tree -->
+          <div class="card tree-card" data-reveal>
+            <div class="tree" role="group" aria-label="Class hierarchy: Dog, Cat and Bird extend the abstract class Animal">
+              <div class="class-box class-box--root">
+                <div class="class-name">Animal <span>abstract</span></div>
+                <ul class="class-members">
+                  <li>getType()</li>
+                  <li>makeSound()</li>
+                </ul>
+              </div>
+              <div class="tree-branches">
+                <div class="class-box"><div class="class-name">Dog</div><p class="class-note">extends Animal</p></div>
+                <div class="class-box"><div class="class-name">Cat</div><p class="class-note">extends Animal</p></div>
+                <div class="class-box"><div class="class-name">Bird</div><p class="class-note">extends Animal</p></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Supporting classes -->
+          <div class="grid grid--classes">
+            <article class="class-box class-box--card" data-reveal>
+              <div class="class-name">Shelter</div>
+              <ul class="class-members">
+                <li>animals</li>
+                <li>adopters</li>
+                <li>adoptionRecords</li>
+              </ul>
+            </article>
+            <article class="class-box class-box--card" data-reveal>
+              <div class="class-name">Adopter</div>
+              <ul class="class-members">
+                <li>adopterId</li>
+                <li>name</li>
+                <li>phone</li>
+              </ul>
+            </article>
+            <article class="class-box class-box--card" data-reveal>
+              <div class="class-name">Adoption</div>
+              <ul class="class-members">
+                <li>animal</li>
+                <li>adopter</li>
+                <li>adoptionDate</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         WORKFLOW
+         ===================================================================== -->
+    <section class="section section--alt" id="workflow" aria-labelledby="workflow-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="workflow-title" data-reveal>How an adoption works</h2>
+          <p data-reveal>Every adoption follows the same six steps, from registering the animal to saving the final record.</p>
+        </div>
+
+        <ol class="timeline">
+          <li class="step" data-reveal>
+            <span class="step-num" aria-hidden="true">1</span>
+            <h3>Register Animal</h3>
+            <p>Add the animal's ID, name, breed and age. It starts as available.</p>
+          </li>
+          <li class="step" data-reveal>
+            <span class="step-num" aria-hidden="true">2</span>
+            <h3>Register Adopter</h3>
+            <p>Store the adopter's ID, name and phone number.</p>
+          </li>
+          <li class="step" data-reveal>
+            <span class="step-num" aria-hidden="true">3</span>
+            <h3>Select Animal</h3>
+            <p>Find the animal the adopter wants by its ID.</p>
+          </li>
+          <li class="step" data-reveal>
+            <span class="step-num" aria-hidden="true">4</span>
+            <h3>Check Availability</h3>
+            <p>Make sure the animal has not already been adopted.</p>
+          </li>
+          <li class="step" data-reveal>
+            <span class="step-num" aria-hidden="true">5</span>
+            <h3>Complete Adoption</h3>
+            <p>Link the animal to the adopter and mark it as adopted.</p>
+          </li>
+          <li class="step" data-reveal>
+            <span class="step-num" aria-hidden="true">6</span>
+            <h3>Save Adoption Record</h3>
+            <p>Add the adoption, with its date, to the list of records.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         TECHNOLOGY + ARCHITECTURE
+         ===================================================================== -->
+    <section class="section" id="technology" aria-labelledby="tech-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="tech-title" data-reveal>Technology stack</h2>
+          <p data-reveal>The project uses core Java only, with GitHub for version control and for hosting this website.</p>
+        </div>
+
+        <ul class="grid grid--tech">
+          <li class="card tech" data-reveal>
+            <span class="tech-mark" aria-hidden="true">Jv</span>
+            <div><h3>Java</h3><p>The core language for the whole application.</p></div>
+          </li>
+          <li class="card tech" data-reveal>
+            <span class="tech-mark" aria-hidden="true">OO</span>
+            <div><h3>OOP</h3><p>Classes and objects model the shelter, with all four pillars applied.</p></div>
+          </li>
+          <li class="card tech" data-reveal>
+            <span class="tech-mark" aria-hidden="true">AL</span>
+            <div><h3>ArrayList</h3><p>Dynamic lists store animals, adopters and adoption records.</p></div>
+          </li>
+          <li class="card tech" data-reveal>
+            <span class="tech-mark" aria-hidden="true">JC</span>
+            <div><h3>Java Collections Framework</h3><p>Standard interfaces and classes for storing and searching data.</p></div>
+          </li>
+          <li class="card tech" data-reveal>
+            <span class="tech-mark" aria-hidden="true">GH</span>
+            <div><h3>GitHub</h3><p>Version control and shared storage for the source code.</p></div>
+          </li>
+          <li class="card tech" data-reveal>
+            <span class="tech-mark" aria-hidden="true">GP</span>
+            <div><h3>GitHub Pages</h3><p>Hosts this project website for free.</p></div>
+          </li>
+        </ul>
+
+        <!-- Architecture -->
+        <div class="subsection" id="architecture">
+          <div class="section-head section-head--tight">
+            <h3 class="subsection-title" data-reveal>Project architecture</h3>
+            <p data-reveal>The program is built in layers. Each layer only talks to the one below it.</p>
+          </div>
+
+          <ol class="layers">
+            <li class="layer" data-reveal>
+              <h4>User</h4>
+              <p>Chooses what to do from the console menu.</p>
+            </li>
+            <li class="layer" data-reveal>
+              <h4>Main Program</h4>
+              <p>Starts the application, shows the menu and reads the user's input.</p>
+            </li>
+            <li class="layer" data-reveal>
+              <h4>Shelter Management</h4>
+              <p>The Shelter class holds the logic for adding, searching, checking availability and completing adoptions.</p>
+            </li>
+            <li class="layer" data-reveal>
+              <h4>Animal / Adopter / Adoption Classes</h4>
+              <p>Model the real-world objects and keep their data.</p>
+            </li>
+            <li class="layer" data-reveal>
+              <h4>ArrayList Collections</h4>
+              <p>Store all animals, adopters and records in memory.</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SAMPLE CONSOLE OUTPUT
+         ===================================================================== -->
+    <section class="section section--alt" id="output" aria-labelledby="output-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="output-title" data-reveal>Sample console output</h2>
+          <p data-reveal>What the program prints when it lists animals, calls <code>makeSound()</code>, completes an adoption and shows the records.</p>
+        </div>
+
+        <div class="output-grid">
+          <figure class="terminal" data-reveal>
+            <figcaption class="window-bar">
+              <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="window-title">Terminal: java Main</span>
+            </figcaption>
+<pre tabindex="0" aria-label="Sample console output"><code><span class="t-dim">$</span> java Main
+
+<span class="t-head">--- Animals at Happy Paws Shelter ---</span>
+
+ID: 1 | Dog | Bruno - Labrador | Age: 3 | <span class="t-ok">Available</span>
+ID: 2 | Cat | Milo - Persian | Age: 2 | <span class="t-ok">Available</span>
+ID: 3 | Bird | Kiwi - Parrot | Age: 1 | <span class="t-ok">Available</span>
+
+Bruno says: Woof!
+Milo says: Meow!
+
+<span class="t-ok">Adoption completed successfully.</span>
+<span class="t-err">Animal is not available.</span>
+
+<span class="t-head">--- Available Animals ---</span>
+
+ID: 2 | Cat | Milo - Persian | Age: 2 | <span class="t-ok">Available</span>
+ID: 3 | Bird | Kiwi - Parrot | Age: 1 | <span class="t-ok">Available</span>
+
+<span class="t-head">--- Adoption Records ---</span>
+
+<span class="t-ok">Adoption record created successfully.</span>
+<span class="t-cursor" aria-hidden="true"></span></code></pre>
+          </figure>
+
+          <aside class="card output-notes" data-reveal aria-labelledby="notes-title">
+            <h3 id="notes-title">Reading the output</h3>
+            <ul>
+              <li><strong>Animal list</strong> shows every record with its ID, type, breed, age and status.</li>
+              <li><strong>Sound lines</strong> show polymorphism: each animal makes its own sound.</li>
+              <li><strong>Adoption messages</strong> show a successful adoption, then a rejected one because the animal is no longer available.</li>
+              <li><strong>Available list</strong> shows only the animals that can still be adopted.</li>
+              <li><strong>Adoption records</strong> confirm that the adoption was saved.</li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         FUTURE ENHANCEMENTS
+         ===================================================================== -->
+    <section class="section" id="future" aria-labelledby="future-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="future-title" data-reveal>Future enhancements</h2>
+          <p data-reveal>The current version is a console application. These upgrades would turn it into a complete shelter platform.</p>
+        </div>
+
+        <ul class="grid grid--future">
+          <li class="card card--compact" data-reveal>
+            <span class="icon-chip"><svg width="24" height="24" aria-hidden="true"><use href="#i-database"/></svg></span>
+            <h3>MySQL database integration</h3>
+            <p>Keep records after the program closes.</p>
+          </li>
+          <li class="card card--compact" data-reveal>
+            <span class="icon-chip"><svg width="24" height="24" aria-hidden="true"><use href="#i-plug"/></svg></span>
+            <h3>JDBC</h3>
+            <p>Connect the Java code to the database.</p>
+          </li>
+          <li class="card card--compact" data-reveal>
+            <span class="icon-chip"><svg width="24" height="24" aria-hidden="true"><use href="#i-window"/></svg></span>
+            <h3>JavaFX / Swing GUI</h3>
+            <p>Replace the console with a graphical interface.</p>
+          </li>
+          <li class="card card--compact" data-reveal>
+            <span class="icon-chip"><svg width="24" height="24" aria-hidden="true"><use href="#i-lock"/></svg></span>
+            <h3>User authentication</h3>
+            <p>Let only authorised staff sign in.</p>
+          </li>
+          <li class="card card--compact" data-reveal>
+            <span class="icon-chip"><svg width="24" height="24" aria-hidden="true"><use href="#i-search-plus"/></svg></span>
+            <h3>Advanced search</h3>
+            <p>Filter by type, breed, age or status.</p>
+          </li>
+          <li class="card card--compact" data-reveal>
+            <span class="icon-chip"><svg width="24" height="24" aria-hidden="true"><use href="#i-cross"/></svg></span>
+            <h3>Medical records</h3>
+            <p>Track vaccinations and health checks.</p>
+          </li>
+          <li class="card card--compact" data-reveal>
+            <span class="icon-chip"><svg width="24" height="24" aria-hidden="true"><use href="#i-bell"/></svg></span>
+            <h3>Email / SMS notifications</h3>
+            <p>Send updates to adopters automatically.</p>
+          </li>
+          <li class="card card--compact" data-reveal>
+            <span class="icon-chip"><svg width="24" height="24" aria-hidden="true"><use href="#i-globe"/></svg></span>
+            <h3>Online adoption requests</h3>
+            <p>Let adopters apply from a website.</p>
+          </li>
+          <li class="card card--compact" data-reveal>
+            <span class="icon-chip"><svg width="24" height="24" aria-hidden="true"><use href="#i-grid"/></svg></span>
+            <h3>Admin dashboard</h3>
+            <p>See animals, adopters and adoptions at a glance.</p>
+          </li>
+          <li class="card card--compact" data-reveal>
+            <span class="icon-chip"><svg width="24" height="24" aria-hidden="true"><use href="#i-file-down"/></svg></span>
+            <h3>PDF / Excel reports</h3>
+            <p>Export records for printing and sharing.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         TEAM
+         EDIT HERE: replace every placeholder with your real details.
+         ===================================================================== -->
+    <section class="section section--alt" id="team" aria-labelledby="team-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="team-title" data-reveal>Project team</h2>
+          <p data-reveal>Replace the placeholders below with your team and course details.</p>
+        </div>
+
+        <div class="team-grid">
+          <div class="card details-card" data-reveal>
+            <h3>Project details</h3>
+            <dl class="details">
+              <div><dt>College</dt><dd class="placeholder">College Name</dd></div>
+              <div><dt>Department</dt><dd class="placeholder">Department Name</dd></div>
+              <div><dt>Subject</dt><dd>OOPS Through Java</dd></div>
+              <div><dt>Faculty guide</dt><dd class="placeholder">Faculty Guide Name</dd></div>
+              <div><dt>Academic year</dt><dd class="placeholder">20XX to 20XX</dd></div>
+            </dl>
+          </div>
+
+          <ul class="members">
+            <li class="card member" data-reveal>
+              <span class="avatar" aria-hidden="true"><svg width="28" height="28"><use href="#i-user"/></svg></span>
+              <h3 class="placeholder">Team Member 1</h3>
+              <p>Role and roll number</p>
+            </li>
+            <li class="card member" data-reveal>
+              <span class="avatar" aria-hidden="true"><svg width="28" height="28"><use href="#i-user"/></svg></span>
+              <h3 class="placeholder">Team Member 2</h3>
+              <p>Role and roll number</p>
+            </li>
+            <li class="card member" data-reveal>
+              <span class="avatar" aria-hidden="true"><svg width="28" height="28"><use href="#i-user"/></svg></span>
+              <h3 class="placeholder">Team Member 3</h3>
+              <p>Role and roll number</p>
+            </li>
+            <li class="card member" data-reveal>
+              <span class="avatar" aria-hidden="true"><svg width="28" height="28"><use href="#i-user"/></svg></span>
+              <h3 class="placeholder">Team Member 4</h3>
+              <p>Role and roll number</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =====================================================================
+       FOOTER
+       ===================================================================== -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <p class="footer-title">Animal Shelter &amp; Adoption Management System</p>
+        <p class="footer-sub">OOPS Through Java Mini Project</p>
+      </div>
+      <!-- EDIT HERE: replace the href below with your own GitHub repository link -->
+      <a class="btn btn-primary" id="github-link" href="https://github.com/your-username/animal-shelter-adoption-system" target="_blank" rel="noopener noreferrer">
+        <svg width="20" height="20" aria-hidden="true"><use href="#i-github"/></svg>
+        View Source Code
+      </a>
+    </div>
+  </footer>
+
+  <!-- Back to top -->
+  <button class="to-top" id="to-top" type="button" aria-label="Back to top">
+    <svg width="22" height="22" aria-hidden="true"><use href="#i-arrow-up"/></svg>
+  </button>
+
+  <script>
+/* =========================================================================
+   ANIMAL SHELTER & ADOPTION MANAGEMENT SYSTEM: Interactions
+   Contents
+   1.  Helpers
+   2.  Dark / light theme toggle
+   3.  Mobile navigation
+   4.  Smooth scrolling
+   5.  Header shadow, active link, back-to-top
+   6.  Animated counters
+   7.  Animal filters
+   8.  makeSound() buttons
+   9.  Scroll reveal
+   10. Java syntax highlighting and copy button
+   Everything runs in the browser: no backend needed.
+   ========================================================================= */
+
+(function () {
+  'use strict';
+
+  /* 1. HELPERS ----------------------------------------------------------- */
+  var $  = function (selector, scope) { return (scope || document).querySelector(selector); };
+  var $$ = function (selector, scope) { return Array.prototype.slice.call((scope || document).querySelectorAll(selector)); };
+
+  var root = document.documentElement;
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var HEADER_BREAKPOINT = 1100; // must match the hamburger breakpoint in style.css
+
+
+  /* 2. THEME TOGGLE ------------------------------------------------------ */
+  var themeBtn = $('#theme-toggle');
+
+  function applyTheme(theme) {
+    root.setAttribute('data-theme', theme);
+    var isDark = theme === 'dark';
+    themeBtn.setAttribute('aria-pressed', String(isDark));
+    themeBtn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    var meta = $('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', isDark ? '#15110F' : '#FFFAF3');
+  }
+
+  // Sync the button with the theme chosen by the inline script in <head>
+  applyTheme(root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+
+  themeBtn.addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try { localStorage.setItem('shelter-theme', next); } catch (e) { /* storage may be blocked */ }
+  });
+
+
+  /* 3. MOBILE NAVIGATION ------------------------------------------------- */
+  var navToggle = $('#nav-toggle');
+  var nav = $('#primary-nav');
+
+  function setMenu(open) {
+    nav.classList.toggle('is-open', open);
+    navToggle.setAttribute('aria-expanded', String(open));
+    navToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  }
+
+  navToggle.addEventListener('click', function () {
+    setMenu(navToggle.getAttribute('aria-expanded') !== 'true');
+  });
+
+  // Close on Escape (and return focus to the button)
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && nav.classList.contains('is-open')) {
+      setMenu(false);
+      navToggle.focus();
+    }
+  });
+
+  // Close when tapping outside the menu
+  document.addEventListener('click', function (e) {
+    if (nav.classList.contains('is-open') && !nav.contains(e.target) && !navToggle.contains(e.target)) {
+      setMenu(false);
+    }
+  });
+
+  // Reset when the window grows back to desktop size
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > HEADER_BREAKPOINT) setMenu(false);
+  });
+
+
+  /* 4. SMOOTH SCROLLING -------------------------------------------------- */
+  // CSS (scroll-margin-top) keeps sections clear of the sticky header.
+  $$('a[href^="#"]').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      var id = link.getAttribute('href');
+      if (id.length < 2) return;
+      var target = $(id);
+      if (!target) return;
+
+      e.preventDefault();
+      setMenu(false);
+      target.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+
+      // Move keyboard focus to the section for screen-reader and keyboard users
+      if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+      target.focus({ preventScroll: true });
+
+      // Keep the URL hash in sync (can fail on some file:// setups, so it is optional)
+      try { history.pushState(null, '', id); } catch (err) { /* ignore */ }
+    });
+  });
+
+
+  /* 5. HEADER SHADOW, ACTIVE LINK, BACK-TO-TOP --------------------------- */
+  var header = $('#site-header');
+  var toTop = $('#to-top');
+  var navLinks = $$('.nav-link');
+  var trackedSections = navLinks
+    .map(function (link) { return $(link.getAttribute('href')); })
+    .filter(Boolean);
+
+  function updateOnScroll() {
+    var y = window.scrollY || window.pageYOffset;
+
+    header.classList.toggle('is-scrolled', y > 8);
+    toTop.classList.toggle('is-visible', y > 600);
+
+    // The active link is the last tracked section whose top has passed the header
+    var current = trackedSections[0];
+    var line = header.offsetHeight + 120;
+    trackedSections.forEach(function (section) {
+      if (section.getBoundingClientRect().top <= line) current = section;
+    });
+    // At the very bottom of the page, highlight the last section
+    if (window.innerHeight + y >= document.documentElement.scrollHeight - 4) {
+      current = trackedSections[trackedSections.length - 1];
+    }
+
+    navLinks.forEach(function (link) {
+      var active = current && link.getAttribute('href') === '#' + current.id;
+      link.classList.toggle('is-active', active);
+      if (active) link.setAttribute('aria-current', 'true');
+      else link.removeAttribute('aria-current');
+    });
+  }
+
+  var ticking = false;
+  window.addEventListener('scroll', function () {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(function () { updateOnScroll(); ticking = false; });
+  }, { passive: true });
+  window.addEventListener('resize', updateOnScroll);
+  updateOnScroll();
+
+  toTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
+    var brand = $('.brand');
+    if (brand) brand.focus({ preventScroll: true });
+  });
+
+
+  /* 6. ANIMATED COUNTERS ------------------------------------------------- */
+  // The HTML already contains the final number, so it still reads correctly without JS.
+  var counters = $$('[data-count]');
+
+  function runCounter(el) {
+    var target = parseInt(el.getAttribute('data-count'), 10);
+    var duration = 900;
+    var start = null;
+
+    function step(timestamp) {
+      if (start === null) start = timestamp;
+      var progress = Math.min((timestamp - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3); // ease-out
+      el.textContent = Math.round(target * eased);
+      if (progress < 1) window.requestAnimationFrame(step);
+    }
+    el.textContent = '0';
+    window.requestAnimationFrame(step);
+  }
+
+  if (counters.length && 'IntersectionObserver' in window && !reducedMotion) {
+    var counterObserver = new IntersectionObserver(function (entries, observer) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          runCounter(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.6 });
+    counters.forEach(function (el) { counterObserver.observe(el); });
+  }
+
+
+  /* 7. ANIMAL FILTERS ---------------------------------------------------- */
+  var filterButtons = $$('.filter-btn');
+  var animalCards = $$('.animal-card');
+  var filterStatus = $('#filter-status');
+
+  function applyFilter(filter) {
+    var shown = 0;
+
+    animalCards.forEach(function (card) {
+      var match = filter === 'all' || card.getAttribute('data-status') === filter;
+      card.hidden = !match;
+      card.classList.remove('is-shown');
+      if (match) {
+        shown += 1;
+        // Restart the small entrance animation each time the card appears
+        void card.offsetWidth;
+        card.classList.add('is-shown');
+      }
+    });
+
+    filterButtons.forEach(function (btn) {
+      var active = btn.getAttribute('data-filter') === filter;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-pressed', String(active));
+    });
+
+    // Announced politely to screen readers
+    filterStatus.textContent = 'Showing ' + shown + ' of ' + animalCards.length + ' animals';
+  }
+
+  filterButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () { applyFilter(btn.getAttribute('data-filter')); });
+  });
+
+
+  /* 8. makeSound() BUTTONS ----------------------------------------------- */
+  // Demonstrates polymorphism: every animal answers the same call differently.
+  $$('.sound-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var output = btn.parentElement.querySelector('.sound-out');
+      output.textContent = btn.getAttribute('data-sound');
+    });
+  });
+
+
+  /* 9. SCROLL REVEAL ----------------------------------------------------- */
+  var revealItems = $$('[data-reveal]');
+
+  if (revealItems.length && 'IntersectionObserver' in window && !reducedMotion) {
+    root.classList.add('js-reveal');
+
+    // Small stagger between siblings that reveal together
+    revealItems.forEach(function (el) {
+      var siblings = $$('[data-reveal]', el.parentElement).filter(function (s) { return s.parentElement === el.parentElement; });
+      var index = siblings.indexOf(el);
+      el.style.transitionDelay = Math.min(index, 5) * 70 + 'ms';
+    });
+
+    var revealObserver = new IntersectionObserver(function (entries, observer) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        el.classList.add('is-visible');
+        observer.unobserve(el);
+        // Remove the stagger delay afterwards so hover effects respond instantly
+        window.setTimeout(function () { el.style.transitionDelay = ''; }, 900);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    revealItems.forEach(function (el) { revealObserver.observe(el); });
+  }
+
+
+  /* 10. JAVA SYNTAX HIGHLIGHTING + COPY BUTTON --------------------------- */
+  var JAVA_KEYWORDS = [
+    'abstract', 'class', 'extends', 'implements', 'interface', 'public', 'private', 'protected',
+    'static', 'final', 'void', 'return', 'new', 'import', 'package', 'this', 'super',
+    'if', 'else', 'for', 'while', 'int', 'double', 'boolean', 'true', 'false', 'null'
+  ];
+
+  function escapeHtml(text) {
+    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // Splits the source into tokens with one regex; every gap between tokens is plain text.
+  // Groups: 1 comment, 2 string, 3 keyword, 4 class/type name, 5 method, 6 number
+  var JAVA_TOKEN = new RegExp(
+    '(\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/)' +
+    '|("(?:\\\\.|[^"\\\\])*")' +
+    '|\\b(' + JAVA_KEYWORDS.join('|') + ')\\b' +
+    '|\\b([A-Z][A-Za-z0-9_]*)\\b' +
+    '|\\b([a-z_][A-Za-z0-9_]*)(?=\\()' +
+    '|\\b(\\d+(?:\\.\\d+)?)\\b',
+    'g'
+  );
+
+  function highlightJava(source) {
+    var html = '';
+    var last = 0;
+    var match;
+
+    JAVA_TOKEN.lastIndex = 0;
+    while ((match = JAVA_TOKEN.exec(source)) !== null) {
+      html += escapeHtml(source.slice(last, match.index));
+
+      var cls = match[1] ? 'tok-c'
+              : match[2] ? 'tok-s'
+              : match[3] ? 'tok-k'
+              : match[4] ? 'tok-t'
+              : match[5] ? 'tok-m'
+              : 'tok-n';
+
+      html += '<span class="' + cls + '">' + escapeHtml(match[0]) + '</span>';
+      last = match.index + match[0].length;
+    }
+    return html + escapeHtml(source.slice(last));
+  }
+
+  $$('code.language-java').forEach(function (block) {
+    block.setAttribute('data-source', block.textContent); // keep the plain text for copying
+    block.innerHTML = highlightJava(block.textContent);
+  });
+
+  // Copy button
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    // Fallback for older browsers or insecure contexts
+    return new Promise(function (resolve, reject) {
+      var area = document.createElement('textarea');
+      area.value = text;
+      area.setAttribute('readonly', '');
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      document.body.appendChild(area);
+      area.select();
+      try { document.execCommand('copy') ? resolve() : reject(); } catch (err) { reject(err); }
+      document.body.removeChild(area);
+    });
+  }
+
+  $$('.copy-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var target = $(btn.getAttribute('data-copy-target'));
+      if (!target) return;
+      var text = target.getAttribute('data-source') || target.textContent;
+
+      copyText(text).then(function () {
+        btn.textContent = 'Copied';
+      }, function () {
+        btn.textContent = 'Press Ctrl+C';
+      }).then(function () {
+        window.setTimeout(function () { btn.textContent = 'Copy'; }, 1800);
+      });
+    });
+  });
+
+})();
+
+  </script>
+</body>
+</html>
